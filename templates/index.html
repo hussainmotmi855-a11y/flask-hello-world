@@ -2,32 +2,60 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>منشئ السيرة الذاتية الاحترافي</title>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, sans-serif; line-height: 1.6; padding: 40px; background: #f4f4f4; }
-        .cv-container { max-width: 800px; margin: auto; background: white; padding: 40px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
-        .header { border-bottom: 2px solid #333; margin-bottom: 20px; }
-        .section { margin-bottom: 20px; }
-        h2 { color: #2c3e50; border-right: 5px solid #2c3e50; padding-right: 10px; }
-        .skills-list { display: flex; flex-wrap: wrap; }
-        .skill-item { background: #e0e0e0; padding: 5px 15px; margin: 5px; border-radius: 15px; }
+        body { font-family: Arial, sans-serif; background-color: #f9f9f9; padding: 20px; }
+        .container { max-width: 600px; margin: auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        h2 { color: #333; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; }
+        input, textarea { width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+        button { padding: 10px 15px; background-color: #28a745; color: white; border: none; border-radius: 4px; cursor: pointer; }
+        .add-btn { background-color: #007bff; margin-top: 5px; }
     </style>
 </head>
 <body>
-    <div class="cv-container">
-        <div class="header">
-            <h1>{{ data.name }}</h1>
-            <p><strong>المسمى الوظيفي:</strong> {{ data.job }}</p>
+
+<div class="container">
+    <h2>إنشاء سيرتك الذاتية</h2>
+    <form action="/generate" method="POST">
+        <div class="form-group">
+            <label>الاسم الكامل:</label>
+            <input type="text" name="name" required>
         </div>
-        <div class="section">
-            <h2>الخبرات المهنية</h2>
-            <ul>{% for exp in data.experiences %}<li>{{ exp }}</li>{% endfor %}</ul>
+        <div class="form-group">
+            <label>المسمى الوظيفي:</label>
+            <input type="text" name="job_title" required>
         </div>
-        <div class="section">
-            <h2>المهارات</h2>
-            <div class="skills-list">
-                {% for skill in data.skills %}<span class="skill-item">{{ skill }}</span>{% endfor %}
-            </div>
+
+        <div id="experience-section">
+            <label>الخبرات العملية:</label>
+            <input type="text" name="experience[]" placeholder="أدخل خبرة عمل">
         </div>
-    </div>
+        <button type="button" class="add-btn" onclick="addInput('experience-section', 'experience[]')">+ إضافة خبرة أخرى</button>
+
+        <div id="skills-section" style="margin-top: 20px;">
+            <label>المهارات:</label>
+            <input type="text" name="skills[]" placeholder="أدخل مهارة">
+        </div>
+        <button type="button" class="add-btn" onclick="addInput('skills-section', 'skills[]')">+ إضافة مهارة أخرى</button>
+
+        <br><br>
+        <button type="submit" style="width: 100%; font-size: 18px;">إنشاء السيرة الذاتية الآن</button>
+    </form>
+</div>
+
+<script>
+    function addInput(sectionId, inputName) {
+        const section = document.getElementById(sectionId);
+        const input = document.createElement('input');
+        input.type = 'text';
+        input.name = inputName;
+        input.placeholder = 'أدخل تفاصيل إضافية...';
+        section.appendChild(input);
+    }
+</script>
+
 </body>
 </html>
