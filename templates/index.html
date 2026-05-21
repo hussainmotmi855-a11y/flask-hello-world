@@ -2,22 +2,48 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <title>صانع السيرة الذاتية</title>
+    <title>منشئ السيرة الذاتية الاحترافي</title>
+    <style>
+        .section { margin-bottom: 20px; padding: 10px; border: 1px solid #ccc; }
+    </style>
 </head>
 <body>
-    <h1>أدخل بيانات سيرتك الذاتية</h1>
-    
-    <form action="/upload" method="POST" enctype="multipart/form-data">
-        <label>الاسم الكامل:</label><br>
-        <input type="text" name="full_name" required><br><br>
+    <h1>أدخل بياناتك</h1>
+    <form action="/generate" method="POST">
+        <div class="section">
+            <label>الاسم الكامل:</label><br>
+            <input type="text" name="name" placeholder="مثلاً: محمد أحمد" required><br>
+            <label>الهدف الوظيفي:</label><br>
+            <textarea name="objective" placeholder="اكتب هدفك المهني"></textarea>
+        </div>
 
-        <label>المسمى الوظيفي:</label><br>
-        <input type="text" name="job_title" required><br><br>
+        <div class="section" id="experience-section">
+            <h3>الخبرات العملية:</h3>
+            <div class="item">
+                <input type="text" name="experience[]" placeholder="مثلاً: مطور برمجيات - شركة X">
+            </div>
+            <button type="button" onclick="addItem('experience-section')">+ إضافة خبرة</button>
+        </div>
 
-        <label>ارفع سيرتك الذاتية (PDF):</label><br>
-        <input type="file" name="pdf_file" accept="application/pdf" required><br><br>
+        <div class="section" id="skills-section">
+            <h3>المهارات:</h3>
+            <div class="item">
+                <input type="text" name="skills[]" placeholder="مثلاً: البرمجة بلغة Python">
+            </div>
+            <button type="button" onclick="addItem('skills-section')">+ إضافة مهارة</button>
+        </div>
 
-        <button type="submit">إرسال ومعالجة البيانات</button>
+        <button type="submit">إنشاء السيرة الذاتية</button>
     </form>
+
+    <script>
+        function addItem(sectionId) {
+            const section = document.getElementById(sectionId);
+            const newItem = document.createElement('div');
+            newItem.className = 'item';
+            newItem.innerHTML = '<input type="text" name="' + (sectionId === 'skills-section' ? 'skills[]' : 'experience[]') + '">';
+            section.insertBefore(newItem, section.lastElementChild);
+        }
+    </script>
 </body>
 </html>
