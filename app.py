@@ -1,15 +1,8 @@
-import pdfplumber
 from flask import Flask, render_template, request
+import pdfplumber
+import os
 
 app = Flask(__name__)
-
-# دالة لاستخراج النص من PDF
-def extract_text_from_pdf(file_path):
-    text = ""
-    with pdfplumber.open(file_path) as pdf:
-        for page in pdf.pages:
-            text += page.extract_text() + "\n"
-    return text
 
 @app.route('/')
 def home():
@@ -20,11 +13,31 @@ def upload_file():
     if 'file' not in request.files:
         return "لا يوجد ملف"
     file = request.files['file']
-    file.save('temp.pdf') # حفظ الملف مؤقتاً
-    extracted_text = extract_text_from_pdf('temp.pdf')
+    if file.filename == '':
+        return "لم يتم اختيار ملف"
+    file.save('temp.pdf')
     
-    # هنا نقوم بإرسال النص المستخرج لصفحة النموذج ليعبأ الحقول تلقائياً
-    return render_template('index.html', extracted_text=extracted_text)
+    # استخراج النص
+    text = ""
+    with pdfplumber.open('temp.pdf') as pdf:
+        for page in pdf.pages:
+            text += page.extract_text() or ""
+            
+    return render_template('index.html', extracted_text=text)
+
+@app.route('/generate', methods=['POST'])
+def generate():
+    # هنا ستأتي بيانات النموذج كاملة
+    user_data = {
+        "name": request.form.get('name'),
+        "job_title": request.form.get('job_title'),
+        "email": request.form.get('email'),
+        "phone": request.form.get('phone'),
+        "address": request.form.get('address'),
+        "experiences": request.form.getlist('experience[]'),
+        "skills": request.form.getlist('skills[]')
+    }
+    return render_template('result.html', data=user_data)
 
 if __name__ == '__main__':
     app.run()
