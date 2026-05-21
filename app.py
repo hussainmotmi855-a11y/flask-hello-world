@@ -4,16 +4,19 @@ app = Flask(__name__)
 
 @app.route('/')
 def home():
-    # هذا يوجه المستخدم لصفحة النموذج
     return render_template('index.html')
 
 @app.route('/generate', methods=['POST'])
 def generate():
-    # هنا يستقبل البيانات من النموذج
-    name = request.form.get('name')
-    job = request.form.get('job_title')
-    # يمكنك إضافة المزيد من الحقول هنا
-    return f"تم استلام بيانات: {name} للمسمى: {job}"
+    # جمع البيانات
+    user_data = {
+        "name": request.form.get('name'),
+        "job": request.form.get('job_title'),
+        "experiences": request.form.getlist('experience[]'),
+        "skills": request.form.getlist('skills[]')
+    }
+    # إرسال البيانات لصفحة التنسيق الاحترافي
+    return render_template('result.html', data=user_data)
 
 if __name__ == '__main__':
     app.run()
