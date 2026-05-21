@@ -2,48 +2,32 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <title>منشئ السيرة الذاتية الاحترافي</title>
     <style>
-        .section { margin-bottom: 20px; padding: 10px; border: 1px solid #ccc; }
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; line-height: 1.6; padding: 40px; background: #f4f4f4; }
+        .cv-container { max-width: 800px; margin: auto; background: white; padding: 40px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        .header { border-bottom: 2px solid #333; margin-bottom: 20px; }
+        .section { margin-bottom: 20px; }
+        h2 { color: #2c3e50; border-right: 5px solid #2c3e50; padding-right: 10px; }
+        .skills-list { display: flex; flex-wrap: wrap; }
+        .skill-item { background: #e0e0e0; padding: 5px 15px; margin: 5px; border-radius: 15px; }
     </style>
 </head>
 <body>
-    <h1>أدخل بياناتك</h1>
-    <form action="/generate" method="POST">
+    <div class="cv-container">
+        <div class="header">
+            <h1>{{ data.name }}</h1>
+            <p><strong>المسمى الوظيفي:</strong> {{ data.job }}</p>
+        </div>
         <div class="section">
-            <label>الاسم الكامل:</label><br>
-            <input type="text" name="name" placeholder="مثلاً: محمد أحمد" required><br>
-            <label>الهدف الوظيفي:</label><br>
-            <textarea name="objective" placeholder="اكتب هدفك المهني"></textarea>
+            <h2>الخبرات المهنية</h2>
+            <ul>{% for exp in data.experiences %}<li>{{ exp }}</li>{% endfor %}</ul>
         </div>
-
-        <div class="section" id="experience-section">
-            <h3>الخبرات العملية:</h3>
-            <div class="item">
-                <input type="text" name="experience[]" placeholder="مثلاً: مطور برمجيات - شركة X">
+        <div class="section">
+            <h2>المهارات</h2>
+            <div class="skills-list">
+                {% for skill in data.skills %}<span class="skill-item">{{ skill }}</span>{% endfor %}
             </div>
-            <button type="button" onclick="addItem('experience-section')">+ إضافة خبرة</button>
         </div>
-
-        <div class="section" id="skills-section">
-            <h3>المهارات:</h3>
-            <div class="item">
-                <input type="text" name="skills[]" placeholder="مثلاً: البرمجة بلغة Python">
-            </div>
-            <button type="button" onclick="addItem('skills-section')">+ إضافة مهارة</button>
-        </div>
-
-        <button type="submit">إنشاء السيرة الذاتية</button>
-    </form>
-
-    <script>
-        function addItem(sectionId) {
-            const section = document.getElementById(sectionId);
-            const newItem = document.createElement('div');
-            newItem.className = 'item';
-            newItem.innerHTML = '<input type="text" name="' + (sectionId === 'skills-section' ? 'skills[]' : 'experience[]') + '">';
-            section.insertBefore(newItem, section.lastElementChild);
-        }
-    </script>
+    </div>
 </body>
 </html>
