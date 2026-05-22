@@ -5,7 +5,6 @@ from flask import Flask, render_template, request
 from openai import OpenAI
 
 app = Flask(__name__)
-# استخدام مفتاح الـ API من متغيرات البيئة (الأمان أولاً)
 client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
 
 @app.route('/')
@@ -14,8 +13,6 @@ def home():
 
 @app.route('/upload', methods=['POST'])
 def upload_file():
-    if 'file' not in request.files:
-        return "لم يتم رفع ملف", 400
     file = request.files['file']
     file.save('temp.pdf')
     
@@ -23,18 +20,16 @@ def upload_file():
     with pdfplumber.open('temp.pdf') as pdf:
         text = "\n".join([page.extract_text() or "" for page in pdf.pages])
     
-    # المعالجة الذكية
+    # توزيع البيانات ذكياً
+    prompt = f"استخرج البيانات التالية من السيرة الذاتية بتنسيق JSON فقط: name, email, phone, job_title, education, skills, experience. النص: {text}"
+    response = client.chat.completions.create(model="gpt-3.5-turbo", messages=[{"role": "user", "content": prompt}])
+    
     try:
-        response = client.chat.completions.create(
-            model="gpt-3.5-turbo",
-            messages=[{"role": "system", "content": "أعد البيانات بتنسيق JSON فقط: name, email, phone, job_title, education, skills, experience."},
-                      {"role": "user", "content": text}]
-        )
-        data = json.loads(response.choices[0].message.content)
+        cv_data = json.loads(response.choices[0].message.content)
     except:
-        data = {"error": "تعذر تحليل الملف بالذكاء الاصطناعي"}
+        cv_data = {}
         
-    return render_template('index.html', cv_data=data)
+    return render_template('index.html', cv_data=cv_data)
 
 if __name__ == '__main__':
     app.run()
