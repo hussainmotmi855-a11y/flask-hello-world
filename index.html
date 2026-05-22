@@ -1,7 +1,32 @@
-<form action="/generate" method="POST">
-    <input type="text" name="name" value="{{ cv_data.name if cv_data else '' }}" placeholder="الاسم">
-    <input type="email" name="email" value="{{ cv_data.email if cv_data else '' }}" placeholder="البريد الإلكتروني">
-    <input type="text" name="job_title" value="{{ cv_data.job_title if cv_data else '' }}" placeholder="المسمى الوظيفي">
-    <textarea name="education">{{ cv_data.education if cv_data else '' }}</textarea>
-    <button type="submit">إنشاء السيرة الذاتية النهائية</button>
-</form>
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>منشئ السيرة الذاتية الاحترافي</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background: #f9f9f9; padding: 20px; }
+        .container { max-width: 600px; margin: auto; background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        input, textarea { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ccc; border-radius: 6px; }
+        button { background: #007bff; color: white; padding: 12px; border: none; border-radius: 6px; cursor: pointer; width: 100%; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2>الخطوة 1: رفع السيرة القديمة</h2>
+    <form action="/upload" method="POST" enctype="multipart/form-data">
+        <input type="file" name="file" accept=".pdf">
+        <button type="submit">تحليل وتعبئة البيانات</button>
+    </form>
+
+    <hr>
+    <h2>الخطوة 2: مراجعة البيانات</h2>
+    <form action="/generate" method="POST">
+        <input type="text" name="name" value="{{ cv_data.name if cv_data else '' }}" placeholder="الاسم الكامل">
+        <input type="email" name="email" value="{{ cv_data.email if cv_data else '' }}" placeholder="الإيميل">
+        <input type="text" name="job_title" value="{{ cv_data.job_title if cv_data else '' }}" placeholder="المسمى الوظيفي">
+        <textarea name="education" placeholder="التعليم">{{ cv_data.education if cv_data else '' }}</textarea>
+        <button type="submit">إنشاء التصميم النهائي</button>
+    </form>
+</div>
+</body>
+</html>
