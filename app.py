@@ -5,7 +5,6 @@ import os
 
 app = Flask(__name__)
 
-# API KEY من Render Environment Variables
 client = OpenAI(
     base_url="https://openrouter.ai/api/v1",
     api_key=os.getenv("OPENROUTER_API_KEY")
@@ -16,40 +15,47 @@ def home():
 
     if request.method == "POST":
 
+        # المعلومات الشخصية
         name = request.form.get("name")
         email = request.form.get("email")
         phone = request.form.get("phone")
         city = request.form.get("city")
-        job = request.form.get("job")
+        address = request.form.get("address")
+        linkedin = request.form.get("linkedin")
+
+        # الوظيفة
+        target_job = request.form.get("target_job")
+
+        # التعليم
+        university = request.form.get("university")
+        major = request.form.get("major")
+        graduation = request.form.get("graduation")
+
+        # المهارات
         skills = request.form.get("skills")
+
+        # الخبرات
         experience = request.form.get("experience")
+
+        # اللغات
+        languages = request.form.get("languages")
+
+        # الدورات
+        courses = request.form.get("courses")
+
+        # قالب السيرة
         template = request.form.get("template")
 
+        # الذكاء الاصطناعي
         prompt = f"""
-        أنشئ سيرة ذاتية احترافية ATS باللغة العربية.
+        اكتب هدف وظيفي احترافي فقط لشخص يريد وظيفة:
 
-        البيانات:
+        {target_job}
 
-        الاسم: {name}
-        البريد الإلكتروني: {email}
-        رقم الهاتف: {phone}
-        المدينة: {city}
-        الوظيفة المستهدفة: {job}
+        وهذه خبراته:
 
-        المهارات:
-        {skills}
-
-        الخبرة:
         {experience}
 
-        المطلوب:
-
-        - إنشاء هدف وظيفي احترافي
-        - تنظيم المهارات
-        - تحسين الخبرات
-        - تنسيق احترافي
-        - لا تستخدم markdown
-        - استخدم HTML فقط
         """
 
         try:
@@ -64,12 +70,13 @@ def home():
                 ]
             )
 
-            content = response.choices[0].message.content
+            objective = response.choices[0].message.content
 
         except Exception as e:
-            return f"خطأ في الذكاء الاصطناعي: {str(e)}"
 
-        # قالب احترافي
+            objective = "هدف وظيفي احترافي"
+
+        # قالب حديث
         if template == "modern":
 
             html = f"""
@@ -102,7 +109,10 @@ def home():
 
             p {{
                 line-height: 2;
-                font-size: 15px;
+            }}
+
+            ul {{
+                line-height: 2;
             }}
 
             .top {{
@@ -120,16 +130,46 @@ def home():
             <h1>{name}</h1>
 
             <p>
-            {email} |
-            {phone} |
-            {city}
+            {email} | {phone} | {city}
+            </p>
+
+            <p>
+            {address}
+            </p>
+
+            <p>
+            LinkedIn: {linkedin}
             </p>
 
             </div>
 
             <hr>
 
-            {content}
+            <h2>الهدف الوظيفي</h2>
+
+            <p>{objective}</p>
+
+            <h2>التعليم</h2>
+
+            <p>
+            {university} - {major} - {graduation}
+            </p>
+
+            <h2>الخبرات</h2>
+
+            <p>{experience}</p>
+
+            <h2>المهارات</h2>
+
+            <p>{skills}</p>
+
+            <h2>اللغات</h2>
+
+            <p>{languages}</p>
+
+            <h2>الدورات</h2>
+
+            <p>{courses}</p>
 
             </body>
 
@@ -151,8 +191,8 @@ def home():
             body {{
                 background: #f3f4f6;
                 padding: 40px;
-                direction: rtl;
                 font-family: Arial;
+                direction: rtl;
             }}
 
             .card {{
@@ -163,6 +203,10 @@ def home():
 
             h1 {{
                 color: #111827;
+            }}
+
+            h2 {{
+                color: #2563eb;
             }}
 
             p {{
@@ -179,15 +223,33 @@ def home():
 
             <h1>{name}</h1>
 
-            <p>
-            {email} |
-            {phone} |
-            {city}
-            </p>
+            <p>{email} | {phone} | {city}</p>
 
             <hr>
 
-            {content}
+            <h2>الهدف الوظيفي</h2>
+
+            <p>{objective}</p>
+
+            <h2>التعليم</h2>
+
+            <p>{university} - {major} - {graduation}</p>
+
+            <h2>الخبرات</h2>
+
+            <p>{experience}</p>
+
+            <h2>المهارات</h2>
+
+            <p>{skills}</p>
+
+            <h2>اللغات</h2>
+
+            <p>{languages}</p>
+
+            <h2>الدورات</h2>
+
+            <p>{courses}</p>
 
             </div>
 
@@ -205,7 +267,6 @@ def home():
         )
 
     return render_template("index.html")
-
 
 if __name__ == "__main__":
     app.run(debug=True)
